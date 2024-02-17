@@ -1,20 +1,17 @@
 import React, { FormEvent, useState } from 'react';
 import axios from '../../config/api/axios';
+import { useAppDispatch } from '../../store';
+import { fetchAuthData } from '../../store/actions/login';
 
 export const Login = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 
+	const dispatch = useAppDispatch();
+
 	const handleSubmit = async (event: FormEvent) => {
 		event.preventDefault();
-		try {
-			const response = await axios.post('/Auth/Login', { username, password });
-			console.log('Успешный вход:', response.data);
-
-			localStorage.setItem('user', JSON.stringify(response.data));
-		} catch (error) {
-			console.error('Ошибка входа:', error);
-		}
+		dispatch(fetchAuthData({ username, password }));
 	};
 
 	return (

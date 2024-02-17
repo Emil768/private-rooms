@@ -1,18 +1,23 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 
 import './App.css';
 import { Login } from './pages/Login';
-import RegistrationPage from './pages/Register';
-import { Contacts } from './pages/Contacts';
+import { useAppDispatch, useAppSelector } from './store';
+
+import { authActions } from './store/slices/login';
+import { getAuthDataSelector } from './store/selectors/login';
 
 function App() {
-	const [count, setCount] = useState(0);
+	const dispatch = useAppDispatch();
+	const isAuth = useAppSelector(getAuthDataSelector);
+	useEffect(() => {
+		dispatch(authActions.initUser());
+	}, [dispatch]);
 
 	return (
 		<div>
+			<div>{isAuth ? 'Выйти' : 'Войти'}</div>
 			<Login />
-			<RegistrationPage />
-			<Contacts />
 		</div>
 	);
 }
