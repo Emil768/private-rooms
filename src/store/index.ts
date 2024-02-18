@@ -1,27 +1,30 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { authReducer } from './slices/auth/login';
-import { StoreSchema } from './types/store';
+import { ReduxStoreProps, StoreSchema } from './types/store';
 import axios from '../config/api/axios';
 
-const store = configureStore<StoreSchema>({
-	reducer: {
-		auth: authReducer,
-	},
-	devTools: true,
-	middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			thunk: {
-				extraArgument: {
-					api: axios,
+export const createReduxStore = ({ navigate }: ReduxStoreProps) => {
+	const store = configureStore<StoreSchema>({
+		reducer: {
+			auth: authReducer,
+		},
+		devTools: true,
+		middleware: (getDefaultMiddleware) =>
+			getDefaultMiddleware({
+				thunk: {
+					extraArgument: {
+						api: axios,
+						navigate,
+					},
 				},
-			},
-		}),
-});
+			}),
+	});
 
-export type AppDispatch = typeof store.dispatch;
-export const useAppDispatch: () => AppDispatch = useDispatch;
+	return store;
+};
 
+export type AppDispatch = ReturnType<typeof createReduxStore>['dispatch'];
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<StoreSchema> = useSelector;
-
-export default store;

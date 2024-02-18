@@ -3,6 +3,7 @@ import { UserAuthProps, UserResponseSchema } from '../../../types/user';
 import { ErrorResponseType, ExtraThunkProps } from '../../types/store';
 import { AxiosError } from 'axios';
 import { validationErrorsAuth } from '../../../utils/validation';
+import { toast } from 'react-toastify';
 
 export const fetchRegister = createAsyncThunk<UserResponseSchema, UserAuthProps, ExtraThunkProps<ErrorResponseType>>(
 	'auth/fetchRegister',
@@ -21,9 +22,20 @@ export const fetchRegister = createAsyncThunk<UserResponseSchema, UserAuthProps,
 				password,
 			});
 
+			toast.success('Success', {
+				autoClose: 1500,
+				closeOnClick: true,
+			});
+
+			extra.navigate('/login');
+
 			return response.data;
 		} catch (error) {
 			if (error instanceof AxiosError) {
+				toast.error(error.response?.data.error, {
+					autoClose: 1500,
+					closeOnClick: true,
+				});
 				return rejectWithValue(error.response?.data.error);
 			}
 			throw error;

@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store';
 import { Input } from '../../components/Input';
 import cls from './Login.module.scss';
@@ -8,6 +8,7 @@ import { getAuthDataErrorSelector, getIsAuthDataLoadingSelector } from '../../st
 import { Text, TextSize, TextTheme } from '../../components/Text';
 import { AppLink } from '../../components/AppLink';
 import { fetchAuthData } from '../../store/actions/auth/login';
+import { authActions } from '../../store/slices/auth/login';
 
 export const LoginPage = () => {
 	const [username, setUsername] = useState('');
@@ -20,6 +21,12 @@ export const LoginPage = () => {
 		event.preventDefault();
 		dispatch(fetchAuthData({ username, password }));
 	};
+
+	useEffect(() => {
+		return () => {
+			dispatch(authActions.resetState());
+		};
+	}, []);
 
 	return (
 		<div className={cls.login}>
@@ -43,9 +50,6 @@ export const LoginPage = () => {
 					maxLength={20}
 					error={(typeof error !== 'string' && error?.password) || ''}
 				/>
-				{error && typeof error === 'string' && (
-					<Text text={error} size={TextSize.TINY} theme={TextTheme.ERROR} />
-				)}
 				<Button type="submit" className={cls.button} isLoading={isLoading}>
 					Войти
 				</Button>

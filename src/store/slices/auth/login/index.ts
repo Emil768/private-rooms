@@ -14,6 +14,11 @@ export const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
+		resetState: (state) => {
+			state.data = undefined;
+			state.error = undefined;
+			state.isLoading = false;
+		},
 		initUser: (state) => {
 			const user = localStorage.getItem('user');
 
@@ -45,11 +50,9 @@ export const authSlice = createSlice({
 			.addCase(fetchRegister.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(fetchRegister.fulfilled, (state, action: PayloadAction<UserResponseSchema>) => {
+			.addCase(fetchRegister.fulfilled, (state) => {
 				state.isLoading = false;
-				state.data = action.payload.user;
 				state.error = undefined;
-				localStorage.setItem('user', JSON.stringify(action.payload));
 			})
 			.addCase(fetchRegister.rejected, (state, action) => {
 				state.isLoading = false;
