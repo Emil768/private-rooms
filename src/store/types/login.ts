@@ -1,8 +1,8 @@
 import { UserShema } from '../../types/user';
-import { ErrorValidationProps } from './store';
+import { ErrorResponseType } from './store';
 
 export interface AuthState {
 	data?: UserShema;
-	error?: string | ErrorValidationProps;
+	error?: ErrorResponseType;
 	isLoading: boolean;
 }

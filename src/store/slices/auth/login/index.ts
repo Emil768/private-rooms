@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { AuthState } from '../../types/login';
-import { fetchAuthData } from '../../actions/login';
-import { UserResponseSchema } from '../../../types/user';
+import { AuthState } from '../../../types/login';
+import { fetchAuthData } from '../../../actions/auth/login';
+import { UserResponseSchema } from '../../../../types/user';
+import { fetchRegister } from '../../../actions/auth/register';
 
 const initialState: AuthState = {
 	data: undefined,
@@ -23,15 +24,34 @@ export const authSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			// login
+
 			.addCase(fetchAuthData.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(fetchAuthData.fulfilled, (state, action: PayloadAction<UserResponseSchema>) => {
 				state.isLoading = false;
 				state.data = action.payload.user;
+				state.error = undefined;
 				localStorage.setItem('user', JSON.stringify(action.payload));
 			})
 			.addCase(fetchAuthData.rejected, (state, action) => {
+				state.isLoading = false;
+				state.error = action.payload;
+			})
+
+			// register
+
+			.addCase(fetchRegister.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(fetchRegister.fulfilled, (state, action: PayloadAction<UserResponseSchema>) => {
+				state.isLoading = false;
+				state.data = action.payload.user;
+				state.error = undefined;
+				localStorage.setItem('user', JSON.stringify(action.payload));
+			})
+			.addCase(fetchRegister.rejected, (state, action) => {
 				state.isLoading = false;
 				state.error = action.payload;
 			});

@@ -1,35 +1,57 @@
 import React, { FormEvent, useState } from 'react';
-import axios from '../../config/api/axios';
-import { useAppDispatch } from '../../store';
-import { fetchAuthData } from '../../store/actions/login';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { Input } from '../../components/Input';
+import cls from './Login.module.scss';
+import { Button } from '../../components/Button';
+import TelegramIcon from '../../assets/icons/telegram.svg?react';
+import { getAuthDataErrorSelector, getIsAuthDataLoadingSelector } from '../../store/selectors/login';
+import { Text, TextSize, TextTheme } from '../../components/Text';
+import { AppLink } from '../../components/AppLink';
+import { fetchAuthData } from '../../store/actions/auth/login';
 
-export const Login = () => {
+export const LoginPage = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-
 	const dispatch = useAppDispatch();
+	const isLoading = useAppSelector(getIsAuthDataLoadingSelector);
+	const error = useAppSelector(getAuthDataErrorSelector);
 
-	const handleSubmit = async (event: FormEvent) => {
+	const onAuthClick = async (event: FormEvent) => {
 		event.preventDefault();
 		dispatch(fetchAuthData({ username, password }));
 	};
 
 	return (
-		<div>
-			<form onSubmit={handleSubmit}>
-				<input
+		<div className={cls.login}>
+			<form onSubmit={onAuthClick} className={cls.form}>
+				<TelegramIcon className={cls.icon} />
+				<Input
+					className={cls.username}
 					type="text"
-					placeholder="Username"
 					value={username}
-					onChange={(e) => setUsername(e.target.value)}
+					onChange={setUsername}
+					placeholder="Username"
+					maxLength={16}
+					error={(typeof error !== 'string' && error?.username) || ''}
 				/>
-				<input
+				<Input
+					className={cls.password}
 					type="password"
-					placeholder="Password"
 					value={password}
-					onChange={(e) => setPassword(e.target.value)}
+					onChange={setPassword}
+					placeholder="Password"
+					maxLength={20}
+					error={(typeof error !== 'string' && error?.password) || ''}
 				/>
-				<button type="submit">Login</button>
+				{error && typeof error === 'string' && (
+					<Text text={error} size={TextSize.TINY} theme={TextTheme.ERROR} />
+				)}
+				<Button type="submit" className={cls.button} isLoading={isLoading}>
+					Войти
+				</Button>
+				<AppLink to="/register">
+					<Text text="Создать аккаунт" size={TextSize.TINY} />
+				</AppLink>
 			</form>
 		</div>
 	);

@@ -1,46 +1,58 @@
 import React, { FormEvent, useState } from 'react';
-import axios from '../../config/api/axios';
+import { useAppDispatch, useAppSelector } from '../../store';
+import { Input } from '../../components/Input';
+import cls from './Register.module.scss';
+import { Button } from '../../components/Button';
+import TelegramIcon from '../../assets/icons/telegram.svg?react';
+import { getAuthDataErrorSelector, getIsAuthDataLoadingSelector } from '../../store/selectors/login';
+import { Text, TextSize, TextTheme } from '../../components/Text';
+import { AppLink } from '../../components/AppLink';
+import { fetchRegister } from '../../store/actions/auth/register';
 
-const RegistrationPage = () => {
+export const RegisterPage = () => {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+	const dispatch = useAppDispatch();
+	const isLoading = useAppSelector(getIsAuthDataLoadingSelector);
+	const error = useAppSelector(getAuthDataErrorSelector);
 
-	const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+	const onAuthClick = async (event: FormEvent) => {
 		event.preventDefault();
-		try {
-			const response = await axios.post('/Account/Register', {
-				username: username,
-				password: password,
-			});
-			console.log('Успешная регистрация:', response.data);
-			// Здесь можно выполнить дополнительные действия после успешной регистрации
-		} catch (error) {
-			console.error('Ошибка регистрации:', error);
-			// Здесь можно обработать ошибку регистрации
-		}
+		dispatch(fetchRegister({ username, password }));
 	};
 
 	return (
-		<div>
-			<h2>Регистрация</h2>
-			<form onSubmit={handleSubmit}>
-				<div>
-					<label htmlFor="username">Имя пользователя:</label>
-					<input type="text" id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-				</div>
-				<div>
-					<label htmlFor="password">Пароль:</label>
-					<input
-						type="password"
-						id="password"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
-				</div>
-				<button type="submit">Зарегистрироваться</button>
+		<div className={cls.login}>
+			<form onSubmit={onAuthClick} className={cls.form}>
+				<TelegramIcon className={cls.icon} />
+				<Input
+					className={cls.username}
+					type="text"
+					value={username}
+					onChange={setUsername}
+					placeholder="Username"
+					maxLength={16}
+					error={(typeof error !== 'string' && error?.username) || ''}
+				/>
+				<Input
+					className={cls.password}
+					type="password"
+					value={password}
+					onChange={setPassword}
+					placeholder="Password"
+					maxLength={20}
+					error={(typeof error !== 'string' && error?.password) || ''}
+				/>
+				{error && typeof error === 'string' && (
+					<Text text={error} size={TextSize.TINY} theme={TextTheme.ERROR} />
+				)}
+				<Button type="submit" className={cls.button} isLoading={isLoading}>
+					Регистрация
+				</Button>
+				<AppLink to="/login">
+					<Text text="Войти в аккаунт" size={TextSize.TINY} />
+				</AppLink>
 			</form>
 		</div>
 	);
 };
-
-export default RegistrationPage;

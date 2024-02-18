@@ -1,0 +1,12 @@
+.Input {
+	box-shadow: var(--main-shadow);
+	padding: 10px 20px;
+	outline: none;
+	border: 2px solid transparent;
+	// border-radius: 20px;
+	font-family: inherit;
+}
+
+.error {
+	border: 2px solid var(--red);
+}

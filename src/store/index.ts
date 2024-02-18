@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { authReducer } from './slices/login';
+import { authReducer } from './slices/auth/login';
 import { StoreSchema } from './types/store';
 import axios from '../config/api/axios';
 
