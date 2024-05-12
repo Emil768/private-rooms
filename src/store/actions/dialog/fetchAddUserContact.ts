@@ -1,0 +1,32 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { ExtraThunkProps } from '../../types/store';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+
+export const fetchAddUserContact = createAsyncThunk<null, string, ExtraThunkProps<string>>(
+	'dialog/fetchAddUserContact',
+	async (userId, { extra, rejectWithValue }) => {
+		try {
+			await extra.api.post('/Contacts/Add', {
+				userIds: [userId],
+			});
+
+			toast.success('Контакт успешно добавлен', {
+				autoClose: 1500,
+				closeOnClick: true,
+			});
+
+			return null;
+		} catch (error) {
+			if (error instanceof AxiosError) {
+				toast.error(`${error?.response?.data.error}`, {
+					autoClose: 1500,
+					closeOnClick: true,
+				});
+
+				return rejectWithValue(error?.response?.data.error);
+			}
+			throw error;
+		}
+	},
+);

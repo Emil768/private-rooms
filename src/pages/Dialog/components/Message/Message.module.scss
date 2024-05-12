@@ -1,0 +1,14 @@
+.Message {
+	background-color: var(--light);
+	border-radius: 12px;
+	width: fit-content;
+	word-break: break-word;
+	max-width: 500px;
+	padding: 10px 20px;
+	line-height: 1.5;
+}
+
+.green {
+	background-color: var(--light-green);
+	align-self: flex-end;
+}

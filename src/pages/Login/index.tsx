@@ -1,14 +1,15 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store';
 import { Input } from '../../components/Input';
 import cls from './Login.module.scss';
 import { Button } from '../../components/Button';
 import TelegramIcon from '../../assets/icons/telegram.svg?react';
 import { getAuthDataErrorSelector, getIsAuthDataLoadingSelector } from '../../store/selectors/login';
-import { Text, TextSize, TextTheme } from '../../components/Text';
+import { Text, TextSize } from '../../components/Text';
 import { AppLink } from '../../components/AppLink';
 import { fetchAuthData } from '../../store/actions/auth/login';
 import { authActions } from '../../store/slices/auth/login';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export const LoginPage = () => {
 	const [username, setUsername] = useState('');

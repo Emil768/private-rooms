@@ -1,13 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { authReducer } from './slices/auth/login';
-import { ReduxStoreProps, StoreSchema } from './types/store';
+import { ReduxStoreProps } from './types/store';
 import axios from '../config/api/axios';
+import { chatReducer } from './slices/chat';
+import { dialogReducer } from './slices/dialog';
 
 export const createReduxStore = ({ navigate }: ReduxStoreProps) => {
-	const store = configureStore<StoreSchema>({
+	const store = configureStore({
 		reducer: {
 			auth: authReducer,
+			chat: chatReducer,
+			dialog: dialogReducer,
 		},
 		devTools: true,
 		middleware: (getDefaultMiddleware) =>
@@ -25,6 +28,3 @@ export const createReduxStore = ({ navigate }: ReduxStoreProps) => {
 };
 
 export type AppDispatch = ReturnType<typeof createReduxStore>['dispatch'];
-
-export const useAppDispatch = () => useDispatch<AppDispatch>();
-export const useAppSelector: TypedUseSelectorHook<StoreSchema> = useSelector;

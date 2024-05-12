@@ -2,9 +2,13 @@ import { AxiosInstance } from 'axios';
 import { AuthState } from './login';
 import { UserAuthProps } from '../../types/user';
 import { NavigateOptions, To } from 'react-router-dom';
+import { ChatState } from './chat';
+import { DialogState } from './dialog';
 
 export interface StoreSchema {
 	auth: AuthState;
+	chat: ChatState;
+	dialog: DialogState;
 }
 
 export type ErrorResponseType = Partial<UserAuthProps> | string;
@@ -19,5 +23,5 @@ export interface ExtraThunkProps<T> {
 		navigate: (to: To, options?: NavigateOptions) => void;
 	};
 	rejectValue: T;
-	getState: () => StoreSchema;
+	state: StoreSchema;
 }

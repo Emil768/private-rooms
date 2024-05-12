@@ -1,12 +1,31 @@
+.wrapper {
+	width: 100%;
+}
+
 .Input {
 	box-shadow: var(--main-shadow);
 	padding: 10px 20px;
 	outline: none;
-	border: 2px solid transparent;
-	// border-radius: 20px;
 	font-family: inherit;
+}
+
+.square {
+	border: 2px solid transparent;
 }
 
 .error {
 	border: 2px solid var(--red);
+}
+
+.search {
+	border-radius: 22px;
+	background: #f5f5f5;
+	border: none;
+	box-shadow: none;
+	&::placeholder {
+		color: #707991;
+	}
+	padding: 10px 16px 10px 50px;
+	background: #f5f5f5 url('../../assets/icons/search.svg') no-repeat 13px center;
+	font-size: 16px;
 }

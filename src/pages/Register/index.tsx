@@ -1,14 +1,15 @@
 import React, { FormEvent, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store';
 import { Input } from '../../components/Input';
 import cls from './Register.module.scss';
 import { Button } from '../../components/Button';
 import TelegramIcon from '../../assets/icons/telegram.svg?react';
 import { getAuthDataErrorSelector, getIsAuthDataLoadingSelector } from '../../store/selectors/login';
-import { Text, TextSize, TextTheme } from '../../components/Text';
+import { Text, TextSize } from '../../components/Text';
 import { AppLink } from '../../components/AppLink';
 import { fetchRegister } from '../../store/actions/auth/register';
 import { authActions } from '../../store/slices/auth/login';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export const RegisterPage = () => {
 	const [username, setUsername] = useState('');

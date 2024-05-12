@@ -1,0 +1,63 @@
+.Dialog {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 16px;
+	text-decoration: none;
+	&:hover {
+		background-color: #e2efff;
+	}
+}
+
+.info {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.active {
+	background-color: #e2efff;
+	cursor: pointer;
+	pointer-events: none;
+}
+
+.avatar {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	color: var(--light);
+}
+
+.name {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.count {
+	font-size: 12px;
+	border: 1px solid red;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+}
+
+.status {
+	border-radius: 50%;
+	height: 8px;
+	width: 8px;
+	border: 1px solid var(--light);
+	box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+}
+
+.green {
+	background-color: #acff58;
+}
+
+.grey {
+	background-color: #d9dce0;
+}

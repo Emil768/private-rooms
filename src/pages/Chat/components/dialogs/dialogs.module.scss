@@ -1,0 +1,16 @@
+.Dialogs {
+	position: relative;
+	overflow-y: auto;
+	height: 665px;
+}
+
+.loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.title {
+	padding: 16px;
+}

@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { UserAuthProps, UserResponseSchema } from '../../../types/user';
+import { UserAuthProps } from '../../../types/user';
 import { ErrorResponseType, ExtraThunkProps } from '../../types/store';
 import { AxiosError } from 'axios';
 import { validationErrorsAuth } from '../../../utils/validation';
 import { toast } from 'react-toastify';
+import { AuthState } from '../../types/login';
 
-export const fetchAuthData = createAsyncThunk<UserResponseSchema, UserAuthProps, ExtraThunkProps<ErrorResponseType>>(
+export const fetchAuthData = createAsyncThunk<AuthState['data'], UserAuthProps, ExtraThunkProps<ErrorResponseType>>(
 	'auth/fetchAuthData',
 	async (authData, { extra, rejectWithValue }) => {
 		try {
@@ -17,7 +18,7 @@ export const fetchAuthData = createAsyncThunk<UserResponseSchema, UserAuthProps,
 
 			const { username, password } = authData;
 
-			const response = await extra.api.post<UserResponseSchema>('/Auth/Login', {
+			const response = await extra.api.post<AuthState['data']>('/Auth/Login', {
 				username,
 				password,
 			});
@@ -27,12 +28,11 @@ export const fetchAuthData = createAsyncThunk<UserResponseSchema, UserAuthProps,
 				closeOnClick: true,
 			});
 
-			extra.navigate('/');
+			extra.navigate('/chat');
 
 			return response.data;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				console.log(error.response?.data.error);
 				toast.error(error.response?.data.error, {
 					autoClose: 1500,
 					closeOnClick: true,

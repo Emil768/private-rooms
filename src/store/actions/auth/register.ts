@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { UserAuthProps, UserResponseSchema } from '../../../types/user';
+import { UserAuthProps } from '../../../types/user';
 import { ErrorResponseType, ExtraThunkProps } from '../../types/store';
 import { AxiosError } from 'axios';
 import { validationErrorsAuth } from '../../../utils/validation';
 import { toast } from 'react-toastify';
+import { AuthState } from '../../types/login';
 
-export const fetchRegister = createAsyncThunk<UserResponseSchema, UserAuthProps, ExtraThunkProps<ErrorResponseType>>(
+export const fetchRegister = createAsyncThunk<AuthState['data'], UserAuthProps, ExtraThunkProps<ErrorResponseType>>(
 	'auth/fetchRegister',
 	async (authData, { extra, rejectWithValue }) => {
 		try {
@@ -17,7 +18,7 @@ export const fetchRegister = createAsyncThunk<UserResponseSchema, UserAuthProps,
 
 			const { username, password } = authData;
 
-			const response = await extra.api.post<UserResponseSchema>('/Account/Register', {
+			const response = await extra.api.post<AuthState['data']>('/Account/Register', {
 				username,
 				password,
 			});

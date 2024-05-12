@@ -1,11 +1,16 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AuthState } from '../../../types/login';
 import { fetchAuthData } from '../../../actions/auth/login';
-import { UserResponseSchema } from '../../../../types/user';
 import { fetchRegister } from '../../../actions/auth/register';
 
 const initialState: AuthState = {
-	data: undefined,
+	data: {
+		user: undefined,
+		accessToken: '',
+		accessTokenExpirationMinutes: 0,
+		refreshToken: '',
+		refreshTokenExpirationMinutes: 0,
+	},
 	error: undefined,
 	isLoading: false,
 };
@@ -15,7 +20,13 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		resetState: (state) => {
-			state.data = undefined;
+			state.data = {
+				user: undefined,
+				accessToken: '',
+				accessTokenExpirationMinutes: 0,
+				refreshToken: '',
+				refreshTokenExpirationMinutes: 0,
+			};
 			state.error = undefined;
 			state.isLoading = false;
 		},
@@ -34,9 +45,9 @@ export const authSlice = createSlice({
 			.addCase(fetchAuthData.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(fetchAuthData.fulfilled, (state, action: PayloadAction<UserResponseSchema>) => {
+			.addCase(fetchAuthData.fulfilled, (state, action: PayloadAction<AuthState['data']>) => {
 				state.isLoading = false;
-				state.data = action.payload.user;
+				state.data = action.payload;
 				state.error = undefined;
 				localStorage.setItem('user', JSON.stringify(action.payload));
 			})

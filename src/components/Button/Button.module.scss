@@ -35,3 +35,11 @@
 .Button:hover::after {
 	left: 100%;
 }
+
+.clear {
+	width: auto;
+	height: auto;
+	border: none;
+	background: transparent;
+	box-shadow: none;
+}
