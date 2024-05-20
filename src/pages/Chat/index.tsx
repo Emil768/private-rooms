@@ -9,24 +9,27 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { MessageReceivedState } from '../../store/types/dialog';
 import { getCurrentUserSelector } from '../../store/selectors/login';
+import { chatActions } from '../../store/slices/chat';
+import { getContactsUsersDataSelector } from '../../store/selectors/chat';
 
 export const ChatPage = () => {
 	const { events } = Connector();
 	const [messageReceived, setMessageReceived] = useState<null | MessageReceivedState>(null);
 	const [сontactAdded, setContactAdded] = useState<MessageReceivedState>();
 	const [сontactDeleted, setContactDeleted] = useState<MessageReceivedState>();
-	const [userOnline, setUserOnline] = useState<MessageReceivedState>();
-	const [userOffline, setUserOffline] = useState<MessageReceivedState>();
+	const [userOnlineId, setUserOnlineId] = useState<MessageReceivedState>();
+	const [userOfflineId, setUserOfflineId] = useState<MessageReceivedState>();
 
 	const dispatch = useAppDispatch();
 
 	const currentUser = useAppSelector(getCurrentUserSelector);
+	const contacts = useAppSelector(getContactsUsersDataSelector);
 
 	const onMessageReceivedHandler = (notification: MessageReceivedState) => setMessageReceived(notification);
 	const onContactAddedCheckHandler = (notification: MessageReceivedState) => setContactAdded(notification);
 	const onContactDeletedCheckHandler = (notification: MessageReceivedState) => setContactDeleted(notification);
-	const onUserOnlineCheckHandler = (notification: MessageReceivedState) => setUserOnline(notification);
-	const onUserOffflineCheckHandler = (notification: MessageReceivedState) => setUserOffline(notification);
+	const onUserOnlineCheckHandler = (notification: MessageReceivedState) => setUserOnlineId(notification);
+	const onUserOffflineCheckHandler = (notification: MessageReceivedState) => setUserOfflineId(notification);
 
 	useEffect(() => {
 		events(
@@ -41,8 +44,10 @@ export const ChatPage = () => {
 	useEffect(() => {
 		if (messageReceived && Object.keys(messageReceived).length > 0) {
 			if (messageReceived.senderId !== currentUser?.id) {
+				const currentUserName = contacts.find((contact) => contact.id === messageReceived.senderId)?.username;
+
 				toast.success(
-					`Новое сообщения от ${currentUser?.username || 'Аноним'}
+					`Новое сообщения от ${currentUserName || 'Аноним'}
 					
 				 `,
 					{
@@ -72,9 +77,39 @@ export const ChatPage = () => {
 	}, [messageReceived]);
 
 	// TODO
-	useEffect(() => {}, [сontactAdded, сontactDeleted]);
+	useEffect(() => {
+		if (сontactAdded) {
+			dispatch(chatActions.setContacts([...contacts, { ...сontactAdded, id: сontactAdded.userId }]));
+		}
+	}, [сontactAdded, сontactDeleted]);
 
-	useEffect(() => {}, [userOffline, userOnline]);
+	useEffect(() => {
+		if (userOnlineId) {
+			const userOnlineName = contacts.find((contact) => contact.id === userOnlineId)?.username;
+			toast.success(
+				`Пользователь ${userOnlineName || 'Аноним'} теперь онлайн
+				
+			 `,
+				{
+					autoClose: 5000,
+					closeOnClick: true,
+				},
+			);
+		}
+
+		if (userOfflineId) {
+			const userOnlineName = contacts.find((contact) => contact.id === userOfflineId)?.username;
+			toast.success(
+				`Пользователь ${userOnlineName || 'Аноним'} вышел из сети
+				
+			 `,
+				{
+					autoClose: 5000,
+					closeOnClick: true,
+				},
+			);
+		}
+	}, [userOnlineId, userOfflineId]);
 	//
 
 	useEffect(() => {

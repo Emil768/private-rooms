@@ -41,9 +41,6 @@ class Connector {
 		};
 	}
 
-	// public newMessage = (messages: string) => {
-	// 	this.connection.send('newMessage', 'foo', messages).then((x) => console.log('sent', x));
-	// };
 	public static getInstance(): Connector {
 		if (!Connector.instance) Connector.instance = new Connector();
 		return Connector.instance;

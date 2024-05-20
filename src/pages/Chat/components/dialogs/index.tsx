@@ -24,7 +24,7 @@ export const Dialogs = () => {
 	// TODO: КОСТЫЛЬ, требуется найти способ не запрашивать данные снова
 	useEffect(() => {
 		dispatch(fetchUserGetContacts(null));
-	}, []);
+	}, [id]);
 
 	return (
 		<div className={cls.Dialogs}>

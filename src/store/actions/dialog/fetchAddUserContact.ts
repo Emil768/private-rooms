@@ -7,14 +7,16 @@ export const fetchAddUserContact = createAsyncThunk<null, string, ExtraThunkProp
 	'dialog/fetchAddUserContact',
 	async (userId, { extra, rejectWithValue }) => {
 		try {
-			await extra.api.post('/Contacts/Add', {
+			const response = await extra.api.post('/Contacts/Add', {
 				userIds: [userId],
 			});
 
-			toast.success('Контакт успешно добавлен', {
-				autoClose: 1500,
-				closeOnClick: true,
-			});
+			if (response.status === 200) {
+				toast.success('Контакт успешно добавлен', {
+					autoClose: 1500,
+					closeOnClick: true,
+				});
+			}
 
 			return null;
 		} catch (error) {

@@ -21,6 +21,7 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { MessageReceivedState } from '../../store/types/dialog';
 import { dialogActions } from '../../store/slices/dialog';
+import { fetchRemoveUserContact } from '../../store/actions/dialog/fetchRemoveUserContact';
 
 export const DialogPage = () => {
 	const { id } = useParams<string>();
@@ -42,6 +43,12 @@ export const DialogPage = () => {
 		}
 	}, [id]);
 
+	const onContactRemove = useCallback(() => {
+		if (id) {
+			dispatch(fetchRemoveUserContact(id));
+		}
+	}, [id]);
+
 	const onMessageSend = useCallback(() => {
 		if (id) {
 			dispatch(
@@ -55,9 +62,9 @@ export const DialogPage = () => {
 		}
 	}, [id, messageText]);
 
-	const onSetMessageText = useCallback((value: string) => {
+	const onSetMessageText = (value: string) => {
 		dispatch(dialogActions.setMessageText(value));
-	}, []);
+	};
 
 	return (
 		<div className={cls.Dialog}>
@@ -68,11 +75,11 @@ export const DialogPage = () => {
 				</div>
 				{isContactExisting ? (
 					<div className={cls.options}>
-						<ContactMinusIcon onClick={onContactAdd} />
+						<ContactMinusIcon onClick={onContactRemove} />
 					</div>
 				) : (
 					<div className={cls.options}>
-						<ContactPlusIcon onClick={onMessageSend} />
+						<ContactPlusIcon onClick={onContactAdd} />
 					</div>
 				)}
 			</div>
