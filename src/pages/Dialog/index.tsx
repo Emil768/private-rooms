@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchUserGetData } from '../../store/actions/dialog/fetchUserGetData';
 import {

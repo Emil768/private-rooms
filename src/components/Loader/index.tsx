@@ -1,4 +1,3 @@
-import React from 'react';
 import cls from './Loader.module.scss';
 
 export enum LoaderTheme {

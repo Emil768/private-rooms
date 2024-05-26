@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { Input } from '../../components/Input';
 import cls from './Register.module.scss';
 import { Button } from '../../components/Button';

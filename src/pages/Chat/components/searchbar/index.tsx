@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { Input, InputTheme } from '../../../../components/Input';
 import MenuIcon from '../../../../assets/icons/menu.svg?react';
 import { Button, ButtonTheme } from '../../../../components/Button';

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { SearchBar } from '../searchbar';
 import { Dialogs } from '../dialogs';
 import cls from './sidebar.module.scss';

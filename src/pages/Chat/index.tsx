@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Connector from '../../config/signalr/signalr-connection';
 import { SideBar } from './components/sidebar';
 import { Outlet } from 'react-router-dom';

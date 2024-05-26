@@ -1,4 +1,4 @@
-import React, { ChangeEvent, InputHTMLAttributes, memo } from 'react';
+import { ChangeEvent, InputHTMLAttributes, memo } from 'react';
 import cls from './Input.module.scss';
 import { Text, TextSize, TextTheme } from '../Text';
 
