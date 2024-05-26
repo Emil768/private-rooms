@@ -4,10 +4,10 @@ import { useAppSelector } from '../hooks/useAppSelector';
 
 export const RequireAuth = ({ children }: { children: JSX.Element }) => {
 	const location = useLocation();
-	const isAuth = useAppSelector(getAuthDataSelector);
+	const authData = useAppSelector(getAuthDataSelector);
 
-	if (!isAuth) {
-		return <Navigate to="/" replace state={{ path: location.pathname }} />;
+	if (!authData) {
+		return <Navigate to="/login" replace state={{ path: location.pathname }} />;
 	}
 
 	return children;

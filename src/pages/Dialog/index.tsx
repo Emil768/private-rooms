@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import cls from './Dialog.module.scss';
 import { fetchUserGetData } from '../../store/actions/dialog/fetchUserGetData';
 import {
 	getDialogMessageTextSelector,
 	getDialogUserDataSelector,
 	getIsContactExistingSelector,
+	getIsLoadingDialogDataSelector,
 	getUserDialogsSelector,
 } from '../../store/selectors/dialog';
 import { Input, InputTheme } from '../../components/Input';
@@ -19,14 +19,16 @@ import { fetchSendUserMessage } from '../../store/actions/dialog/fetchSendUserMe
 import { Message } from './components/Message';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { MessageReceivedState } from '../../store/types/dialog';
 import { dialogActions } from '../../store/slices/dialog';
 import { fetchRemoveUserContact } from '../../store/actions/dialog/fetchRemoveUserContact';
+import { MessageReceivedState } from '../../store/types/notifications';
+import cls from './Dialog.module.scss';
 
 export const DialogPage = () => {
 	const { id } = useParams<string>();
 	const dispatch = useAppDispatch();
 	const user = useAppSelector(getDialogUserDataSelector);
+	const isLoading = useAppSelector(getIsLoadingDialogDataSelector);
 	const isContactExisting = useAppSelector(getIsContactExistingSelector);
 	const dialogs = useAppSelector(getUserDialogsSelector);
 	const messageText = useAppSelector(getDialogMessageTextSelector);
@@ -50,7 +52,7 @@ export const DialogPage = () => {
 	}, [id]);
 
 	const onMessageSend = useCallback(() => {
-		if (id) {
+		if (id && messageText) {
 			dispatch(
 				fetchSendUserMessage({
 					receiverId: id,
@@ -66,11 +68,25 @@ export const DialogPage = () => {
 		dispatch(dialogActions.setMessageText(value));
 	};
 
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'Enter') {
+				onMessageSend();
+			}
+		};
+
+		window.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			window.removeEventListener('keydown', handleKeyDown);
+		};
+	}, [onMessageSend]);
+
 	return (
 		<div className={cls.Dialog}>
 			<div className={cls.header}>
 				<div className={cls.info}>
-					<Avatar username={user?.username || ''} />
+					<Avatar username={user?.username || ''} isLoading={isLoading} />
 					<div>{user?.username}</div>
 				</div>
 				{isContactExisting ? (

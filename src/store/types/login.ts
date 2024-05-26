@@ -8,7 +8,8 @@ export interface AuthState {
 		accessTokenExpirationMinutes: number;
 		refreshToken: string;
 		refreshTokenExpirationMinutes: number;
-	};
+	} | null;
 	error?: ErrorResponseType;
 	isLoading: boolean;
+	isInitialized: boolean;
 }

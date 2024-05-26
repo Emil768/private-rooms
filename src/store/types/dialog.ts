@@ -1,10 +1,11 @@
+import { MessageReceivedState } from './notifications';
+
 export interface DialogState {
 	user?: Dialog;
 	dialogs?: Record<string, MessageReceivedState[]>;
 	isLoading: boolean;
 	error?: string;
 	messageText: string;
-	isFriend: boolean;
 }
 
 export interface DialogResponseState {
@@ -27,12 +28,4 @@ export interface Dialog {
 	id: string;
 	username: string;
 	onlineStatus: number;
-}
-
-export interface MessageReceivedState {
-	content: string;
-	id: string;
-	messageType: number;
-	receiverId: string;
-	senderId: string;
 }

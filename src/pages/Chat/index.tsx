@@ -7,18 +7,18 @@ import { toast } from 'react-toastify';
 import { dialogActions } from '../../store/slices/dialog';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { MessageReceivedState } from '../../store/types/dialog';
 import { getCurrentUserSelector } from '../../store/selectors/login';
 import { chatActions } from '../../store/slices/chat';
 import { getContactsUsersDataSelector } from '../../store/selectors/chat';
+import { MessageReceivedState, UserIdType, UserNotificationState } from '../../store/types/notifications';
 
 export const ChatPage = () => {
 	const { events } = Connector();
 	const [messageReceived, setMessageReceived] = useState<null | MessageReceivedState>(null);
-	const [сontactAdded, setContactAdded] = useState<MessageReceivedState>();
-	const [сontactDeleted, setContactDeleted] = useState<MessageReceivedState>();
-	const [userOnlineId, setUserOnlineId] = useState<MessageReceivedState>();
-	const [userOfflineId, setUserOfflineId] = useState<MessageReceivedState>();
+	const [сontactAdded, setContactAdded] = useState<UserNotificationState>();
+	const [сontactDeleted, setContactDeleted] = useState<UserIdType>();
+	const [userOnlineId, setUserOnlineId] = useState<string>();
+	const [userOfflineId, setUserOfflineId] = useState<string>();
 
 	const dispatch = useAppDispatch();
 
@@ -26,10 +26,10 @@ export const ChatPage = () => {
 	const contacts = useAppSelector(getContactsUsersDataSelector);
 
 	const onMessageReceivedHandler = (notification: MessageReceivedState) => setMessageReceived(notification);
-	const onContactAddedCheckHandler = (notification: MessageReceivedState) => setContactAdded(notification);
-	const onContactDeletedCheckHandler = (notification: MessageReceivedState) => setContactDeleted(notification);
-	const onUserOnlineCheckHandler = (notification: MessageReceivedState) => setUserOnlineId(notification);
-	const onUserOffflineCheckHandler = (notification: MessageReceivedState) => setUserOfflineId(notification);
+	const onContactAddedCheckHandler = (notification: UserNotificationState) => setContactAdded(notification);
+	const onContactDeletedCheckHandler = (notification: UserIdType) => setContactDeleted(notification);
+	const onUserOnlineCheckHandler = (notification: string) => setUserOnlineId(notification);
+	const onUserOffflineCheckHandler = (notification: string) => setUserOfflineId(notification);
 
 	useEffect(() => {
 		events(
@@ -57,7 +57,7 @@ export const ChatPage = () => {
 				);
 			}
 
-			const dialogs = JSON.parse(localStorage.getItem('dialogs') as string);
+			const dialogs = JSON.parse(localStorage.getItem('dialogs')!);
 
 			const targetId =
 				messageReceived.senderId === currentUser?.id ? messageReceived.receiverId : messageReceived.senderId;
@@ -68,15 +68,14 @@ export const ChatPage = () => {
 
 			dialogs[targetId].push(messageReceived);
 
-			localStorage.setItem('dialogs', JSON.stringify({ ...dialogs }));
+			setMessageReceived(null);
 
 			dispatch(dialogActions.setUserDialog(dialogs));
 
-			setMessageReceived(null);
+			localStorage.setItem('dialogs', JSON.stringify({ ...dialogs }));
 		}
 	}, [messageReceived]);
 
-	// TODO
 	useEffect(() => {
 		if (сontactAdded) {
 			dispatch(chatActions.setContacts([...contacts, { ...сontactAdded, id: сontactAdded.userId }]));
@@ -109,22 +108,21 @@ export const ChatPage = () => {
 				},
 			);
 		}
-	}, [userOnlineId, userOfflineId]);
+	}, [userOnlineId, userOfflineId, dispatch]);
 	//
 
 	useEffect(() => {
 		if (!JSON.parse(localStorage.getItem('dialogs') as string)) {
 			localStorage.setItem('dialogs', JSON.stringify({}));
 		} else {
-			dispatch(dialogActions.setUserDialog(JSON.parse(localStorage.getItem('dialogs') as string)));
+			dispatch(dialogActions.setUserDialog(JSON.parse(localStorage.getItem('dialogs')!)));
 		}
-	}, [dispatch]);
+	}, []);
 
 	return (
 		<div className={cls.Chat}>
 			<div className={cls.content}>
 				<SideBar />
-				{/* {!userDialog && <div className={cls.empty}>Выберите кому хотите написать</div>} */}
 				<Outlet />
 			</div>
 		</div>

@@ -4,15 +4,10 @@ import { fetchAuthData } from '../../../actions/auth/login';
 import { fetchRegister } from '../../../actions/auth/register';
 
 const initialState: AuthState = {
-	data: {
-		user: undefined,
-		accessToken: '',
-		accessTokenExpirationMinutes: 0,
-		refreshToken: '',
-		refreshTokenExpirationMinutes: 0,
-	},
+	data: null,
 	error: undefined,
 	isLoading: false,
+	isInitialized: false,
 };
 
 export const authSlice = createSlice({
@@ -20,15 +15,10 @@ export const authSlice = createSlice({
 	initialState,
 	reducers: {
 		resetState: (state) => {
-			state.data = {
-				user: undefined,
-				accessToken: '',
-				accessTokenExpirationMinutes: 0,
-				refreshToken: '',
-				refreshTokenExpirationMinutes: 0,
-			};
+			state.data = null;
 			state.error = undefined;
 			state.isLoading = false;
+			state.isInitialized = false;
 		},
 		initUser: (state) => {
 			const user = localStorage.getItem('user');
@@ -36,6 +26,7 @@ export const authSlice = createSlice({
 			if (user) {
 				state.data = JSON.parse(user);
 			}
+			state.isInitialized = true;
 		},
 	},
 	extraReducers: (builder) => {
@@ -49,7 +40,6 @@ export const authSlice = createSlice({
 				state.isLoading = false;
 				state.data = action.payload;
 				state.error = undefined;
-				localStorage.setItem('user', JSON.stringify(action.payload));
 			})
 			.addCase(fetchAuthData.rejected, (state, action) => {
 				state.isLoading = false;

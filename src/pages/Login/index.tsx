@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Input } from '../../components/Input';
 import cls from './Login.module.scss';
 import { Button } from '../../components/Button';
@@ -10,18 +10,27 @@ import { fetchAuthData } from '../../store/actions/auth/login';
 import { authActions } from '../../store/slices/auth/login';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import { useNavigate } from 'react-router-dom';
 
 export const LoginPage = () => {
+	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
-	const dispatch = useAppDispatch();
 	const isLoading = useAppSelector(getIsAuthDataLoadingSelector);
 	const error = useAppSelector(getAuthDataErrorSelector);
 
-	const onAuthClick = async (event: FormEvent) => {
-		event.preventDefault();
-		dispatch(fetchAuthData({ username, password }));
-	};
+	const onAuthClick = useCallback(
+		async (event: FormEvent) => {
+			event.preventDefault();
+			const result = await dispatch(fetchAuthData({ username, password }));
+
+			if (result.meta.requestStatus === 'fulfilled') {
+				navigate('/');
+			}
+		},
+		[username, password],
+	);
 
 	useEffect(() => {
 		return () => {

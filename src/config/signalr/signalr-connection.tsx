@@ -1,14 +1,14 @@
 import * as signalR from '@microsoft/signalr';
-import { MessageReceivedState } from '../../store/types/dialog';
+import { MessageReceivedState, UserIdType, UserNotificationState } from '../../store/types/notifications';
 
 class Connector {
 	private connection: signalR.HubConnection;
 	public events: (
 		onMessageReceived: (notification: MessageReceivedState) => void,
-		onContactAdded: (notification: MessageReceivedState) => void,
-		onContactDeleted: (notification: MessageReceivedState) => void,
-		onUserOnlineCheck: (notification: MessageReceivedState) => void,
-		onUserOfflineCheck: (notification: MessageReceivedState) => void,
+		onContactAdded: (notification: UserNotificationState) => void,
+		onContactDeleted: (notification: UserIdType) => void,
+		onUserOnlineCheck: (notification: string) => void,
+		onUserOfflineCheck: (notification: string) => void,
 	) => void;
 	static instance: Connector;
 	constructor() {
@@ -26,7 +26,7 @@ class Connector {
 			this.connection.on('ReceiveMessage', (notification) => {
 				onMessageReceived(notification);
 			});
-			this.connection.on('ContactAdded', (notification) => {
+			this.connection.on('ContactAdded', (notification: UserNotificationState) => {
 				onContactAdded(notification);
 			});
 			this.connection.on('ContactDeleted', (notification) => {

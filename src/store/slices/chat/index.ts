@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { ChatState, UserContactsResponseState } from '../../types/chat';
+import { ChatState } from '../../types/chat';
 import { fetchUserSearchData } from '../../actions/chat/fetchUserSearchData';
 import { fetchUserGetContacts } from '../../actions/chat/fetchUserGetContacts';
 import { Dialog } from '../../types/dialog';
@@ -10,6 +10,7 @@ const initialState: ChatState = {
 	error: undefined,
 	users: [],
 	contacts: [],
+	isInitFetchContacts: false,
 };
 export const chatSlice = createSlice({
 	name: 'chat',
@@ -20,6 +21,9 @@ export const chatSlice = createSlice({
 		},
 		setContacts: (state, action: PayloadAction<Dialog[]>) => {
 			state.contacts = action.payload;
+		},
+		setIsInitFetchContacts: (state, action: PayloadAction<boolean>) => {
+			state.isInitFetchContacts = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -41,9 +45,8 @@ export const chatSlice = createSlice({
 			.addCase(fetchUserGetContacts.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(fetchUserGetContacts.fulfilled, (state, action: PayloadAction<UserContactsResponseState>) => {
+			.addCase(fetchUserGetContacts.fulfilled, (state) => {
 				state.isLoading = false;
-				state.contacts = action.payload.contacts;
 			})
 			.addCase(fetchUserGetContacts.rejected, (state, action) => {
 				state.isLoading = false;

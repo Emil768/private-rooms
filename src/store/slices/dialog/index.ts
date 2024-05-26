@@ -9,7 +9,6 @@ const initialState: DialogState = {
 	messageText: '',
 	isLoading: false,
 	error: undefined,
-	isFriend: false,
 };
 export const dialogSlice = createSlice({
 	name: 'dialog',
@@ -44,31 +43,13 @@ export const dialogSlice = createSlice({
 			.addCase(fetchAddUserContact.pending, (state) => {
 				state.isLoading = true;
 			})
-			// TODO: Ждем бэк
-			.addCase(fetchAddUserContact.fulfilled, (state, action: PayloadAction<boolean>) => {
+			.addCase(fetchAddUserContact.fulfilled, (state) => {
 				state.isLoading = false;
-				state.isFriend = action.payload;
 			})
 			.addCase(fetchAddUserContact.rejected, (state, action) => {
 				state.isLoading = false;
 				state.error = action.payload;
 			});
-
-		// Отрпавить сообщение
-		// .addCase(fetchSendUserMessage.pending, (state) => {
-		// 	state.isLoading = true;
-		// })
-		// .addCase(fetchSendUserMessage.fulfilled, (state, action: PayloadAction<string>) => {
-		// 	state.isLoading = false;
-
-		// 	const dialogs = JSON.parse(localStorage.getItem('dialogs'));
-
-		// 	localStorage.setItem('dialogs', JSON.stringify([...dialogs, { [action.payload]: {} }]));
-		// })
-		// .addCase(fetchSendUserMessage.rejected, (state, action) => {
-		// 	state.isLoading = false;
-		// 	state.error = action.payload;
-		// });
 	},
 });
 

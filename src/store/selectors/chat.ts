@@ -8,4 +8,8 @@ export const getIsLoadingChatDataSelector = (state: StoreSchema) => state?.chat.
 
 export const getChatUsersDataSelector = (state: StoreSchema) => state?.chat.users;
 
+export const getIsInitializedContactsSelector = () => Boolean(localStorage.getItem('initialized_contacts'));
+
+export const getIsInitFetchContactsSelector = (state: StoreSchema) => state?.chat.isInitFetchContacts;
+
 export const getContactsUsersDataSelector = (state: StoreSchema) => state?.chat.contacts;

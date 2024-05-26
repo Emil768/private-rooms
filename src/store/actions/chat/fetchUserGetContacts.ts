@@ -9,7 +9,8 @@ export const fetchUserGetContacts = createAsyncThunk<UserContactsResponseState, 
 	async (_, { extra, rejectWithValue }) => {
 		try {
 			const response = await extra.api.get<UserContactsResponseState>('/Contacts/All');
-
+			localStorage.setItem('initialized_contacts', JSON.stringify(true));
+			localStorage.setItem('contacts', JSON.stringify(response.data.contacts));
 			return response.data;
 		} catch (error) {
 			if (error instanceof AxiosError) {

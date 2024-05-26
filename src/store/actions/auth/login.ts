@@ -27,9 +27,7 @@ export const fetchAuthData = createAsyncThunk<AuthState['data'], UserAuthProps, 
 				autoClose: 1500,
 				closeOnClick: true,
 			});
-
-			extra.navigate('/chat');
-
+			localStorage.setItem('user', JSON.stringify(response.data));
 			return response.data;
 		} catch (error) {
 			if (error instanceof AxiosError) {

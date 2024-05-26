@@ -3,7 +3,6 @@ import { ChatPage } from '../../pages/Chat';
 import { RegisterPage } from '../../pages/Register';
 import { LoginPage } from '../../pages/Login';
 import { NotFoundPage } from '../../pages/NotFound';
-import { MainPage } from '../../pages/Main';
 import { DialogPage } from '../../pages/Dialog';
 
 export type AutRouterProps = RouteProps & {
@@ -11,7 +10,6 @@ export type AutRouterProps = RouteProps & {
 };
 
 export enum AppRoutes {
-	MAIN = 'main',
 	CHAT = 'chat',
 	LOGIN = 'login',
 	REGISTER = 'register',
@@ -19,8 +17,7 @@ export enum AppRoutes {
 }
 
 export const RoutePath: Record<AppRoutes, string> = {
-	[AppRoutes.MAIN]: '/',
-	[AppRoutes.CHAT]: '/chat',
+	[AppRoutes.CHAT]: '/',
 	[AppRoutes.LOGIN]: '/login',
 	[AppRoutes.REGISTER]: '/register',
 
@@ -29,14 +26,10 @@ export const RoutePath: Record<AppRoutes, string> = {
 };
 
 export const routeConfig: Record<AppRoutes, AutRouterProps> = {
-	[AppRoutes.MAIN]: {
-		path: RoutePath.main,
-		element: <MainPage />,
-	},
 	[AppRoutes.CHAT]: {
 		path: RoutePath.chat,
 		element: <ChatPage />,
-		children: <Route path={`${RoutePath.chat}/:id`} element={<DialogPage />} />,
+		children: <Route path={`${RoutePath.chat}:id`} element={<DialogPage />} />,
 		isAuth: true,
 	},
 	[AppRoutes.LOGIN]: {

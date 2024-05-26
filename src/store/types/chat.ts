@@ -6,6 +6,7 @@ export interface ChatState {
 	isLoading: boolean;
 	error?: string;
 	contacts: Dialog[];
+	isInitFetchContacts: boolean;
 }
 
 export interface UserContactsResponseState {

@@ -33,7 +33,7 @@ export const SearchBar = () => {
 			<Button theme={ButtonTheme.CLEAR}>
 				<MenuIcon />
 			</Button>
-			<Input value={search} onChange={onSearchUserChange} placeholder="Search" theme={InputTheme.SEARCH} />
+			<Input value={search} onChange={onSearchUserChange} placeholder="Поиск" theme={InputTheme.SEARCH} />
 		</div>
 	);
 };

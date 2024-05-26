@@ -6,4 +6,6 @@ export const getCurrentUserSelector = (state: StoreSchema) => state?.auth.data?.
 
 export const getAuthDataErrorSelector = (state: StoreSchema) => state?.auth.error;
 
+export const getIsInitializedSelector = (state: StoreSchema) => state?.auth.isInitialized;
+
 export const getIsAuthDataLoadingSelector = (state: StoreSchema) => state?.auth.isLoading;
