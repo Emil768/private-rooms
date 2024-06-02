@@ -58,8 +58,13 @@ export const ChatPage = () => {
 							const { payload } = await dispatch(fetchUserGetData(messageReceived.senderId));
 
 							if (payload) {
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore
 								dispatch(chatActions.setUnAddedContacts([...unAddedContacts, { ...payload }]));
+
 								toast.success(
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore
 									`Новое сообщения от ${payload?.username || 'Аноним'}
 							`,
 									{
