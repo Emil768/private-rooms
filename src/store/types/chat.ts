@@ -1,11 +1,12 @@
-import { Dialog } from './dialog';
+import { Dialog, Dialogs } from './dialog';
 
 export interface ChatState {
 	search: string;
 	users?: Dialog[];
 	isLoading: boolean;
 	error?: string;
-	contacts: Dialog[];
+	contacts: Dialogs[];
+	unAddedContacts: Dialogs[];
 	isInitFetchContacts: boolean;
 }
 

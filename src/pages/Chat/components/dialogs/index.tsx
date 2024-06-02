@@ -2,8 +2,9 @@ import { memo, useEffect } from 'react';
 import { Dialog } from '../dialog';
 import {
 	getChatUsersDataSelector,
-	getContactsUsersDataSelector,
+	getUserContactsSelector,
 	getIsInitializedContactsSelector,
+	getUnAddedUserContactsSelector,
 } from '../../../../store/selectors/chat';
 import { fetchUserGetContacts } from '../../../../store/actions/chat/fetchUserGetContacts';
 import cls from './dialogs.module.scss';
@@ -18,7 +19,8 @@ export const Dialogs = memo(() => {
 	const dispatch = useAppDispatch();
 	const users = useAppSelector(getChatUsersDataSelector);
 	const userDialogs = useAppSelector(getUserDialogsSelector);
-	const contacts = useAppSelector(getContactsUsersDataSelector);
+	const contacts = useAppSelector(getUserContactsSelector);
+	const unAddedContacts = useAppSelector(getUnAddedUserContactsSelector);
 	const isInitializedContacts = useAppSelector(getIsInitializedContactsSelector);
 
 	useEffect(() => {
@@ -29,9 +31,18 @@ export const Dialogs = memo(() => {
 				localStorage.setItem('contacts', JSON.stringify([]));
 			} else {
 				dispatch(chatActions.setContacts(JSON.parse(localStorage.getItem('contacts')!)));
+				dispatch(chatActions.setUnAddedContacts(JSON.parse(localStorage.getItem('unadded_contacts')!)));
 			}
 		}
-	}, [isInitializedContacts, chatActions.setContacts]);
+	}, [isInitializedContacts]);
+
+	useEffect(() => {
+		if (contacts) localStorage.setItem('contacts', JSON.stringify(contacts));
+
+		if (unAddedContacts) {
+			localStorage.setItem('unadded_contacts', JSON.stringify(unAddedContacts));
+		}
+	}, [contacts, unAddedContacts]);
 
 	return (
 		<div className={cls.Dialogs}>
@@ -39,6 +50,22 @@ export const Dialogs = memo(() => {
 				<div className={cls.contacts}>
 					<div className={cls.title}>Контакты</div>
 					{contacts.map((item) => (
+						<Dialog
+							activeDialog={id === item.id}
+							length={
+								userDialogs && userDialogs[item.id]?.length ? String(userDialogs[item.id]?.length) : ''
+							}
+							dialog={item}
+							key={item.id}
+						/>
+					))}
+				</div>
+			) : null}
+
+			{unAddedContacts?.length ? (
+				<div className={cls.contacts}>
+					<div className={cls.title}>Не прочитанные сообщения</div>
+					{unAddedContacts.map((item) => (
 						<Dialog
 							activeDialog={id === item.id}
 							length={

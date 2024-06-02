@@ -9,8 +9,9 @@ import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { getCurrentUserSelector } from '../../store/selectors/login';
 import { chatActions } from '../../store/slices/chat';
-import { getContactsUsersDataSelector } from '../../store/selectors/chat';
+import { getUnAddedUserContactsSelector, getUserContactsSelector } from '../../store/selectors/chat';
 import { MessageReceivedState, UserIdType, UserNotificationState } from '../../store/types/notifications';
+import { fetchUserGetData } from '../../store/actions/dialog/fetchUserGetData';
 
 export const ChatPage = () => {
 	const { events } = Connector();
@@ -23,7 +24,8 @@ export const ChatPage = () => {
 	const dispatch = useAppDispatch();
 
 	const currentUser = useAppSelector(getCurrentUserSelector);
-	const contacts = useAppSelector(getContactsUsersDataSelector);
+	const contacts = useAppSelector(getUserContactsSelector);
+	const unAddedContacts = useAppSelector(getUnAddedUserContactsSelector);
 
 	const onMessageReceivedHandler = (notification: MessageReceivedState) => setMessageReceived(notification);
 	const onContactAddedCheckHandler = (notification: UserNotificationState) => setContactAdded(notification);
@@ -42,43 +44,86 @@ export const ChatPage = () => {
 	}, []);
 
 	useEffect(() => {
-		if (messageReceived && Object.keys(messageReceived).length > 0) {
-			if (messageReceived.senderId !== currentUser?.id) {
-				const currentUserName = contacts.find((contact) => contact.id === messageReceived.senderId)?.username;
+		async function handleMessage() {
+			if (messageReceived && Object.keys(messageReceived).length > 0) {
+				if (messageReceived.senderId !== currentUser?.id) {
+					const senderUser = contacts.find((contact) => contact.id === messageReceived.senderId);
 
-				toast.success(
-					`Новое сообщения от ${currentUserName || 'Аноним'}
-					
-				 `,
-					{
-						autoClose: 5000,
-						closeOnClick: true,
-					},
-				);
+					if (!senderUser) {
+						const senderUnAddedUser = unAddedContacts.find(
+							(contact) => contact.id === messageReceived.senderId,
+						);
+
+						if (!senderUnAddedUser) {
+							const { payload } = await dispatch(fetchUserGetData(messageReceived.senderId));
+
+							if (payload) {
+								dispatch(chatActions.setUnAddedContacts([...unAddedContacts, { ...payload }]));
+								toast.success(
+									`Новое сообщения от ${payload?.username || 'Аноним'}
+							`,
+									{
+										autoClose: 5000,
+										closeOnClick: true,
+									},
+								);
+							}
+						} else {
+							toast.success(
+								`Новое сообщения от ${senderUnAddedUser?.username}
+						`,
+								{
+									autoClose: 5000,
+									closeOnClick: true,
+								},
+							);
+						}
+					} else {
+						toast.success(
+							`Новое сообщения от ${senderUser?.username}
+					`,
+							{
+								autoClose: 5000,
+								closeOnClick: true,
+							},
+						);
+					}
+				}
+
+				const dialogs = JSON.parse(localStorage.getItem('dialogs')!);
+
+				const targetId =
+					messageReceived.senderId === currentUser?.id
+						? messageReceived.receiverId
+						: messageReceived.senderId;
+
+				if (!dialogs[targetId]) {
+					dialogs[targetId] = [];
+				}
+
+				dialogs[targetId].push(messageReceived);
+
+				setMessageReceived(null);
+
+				dispatch(dialogActions.setUserDialog(dialogs));
+
+				localStorage.setItem('dialogs', JSON.stringify({ ...dialogs }));
 			}
-
-			const dialogs = JSON.parse(localStorage.getItem('dialogs')!);
-
-			const targetId =
-				messageReceived.senderId === currentUser?.id ? messageReceived.receiverId : messageReceived.senderId;
-
-			if (!dialogs[targetId]) {
-				dialogs[targetId] = [];
-			}
-
-			dialogs[targetId].push(messageReceived);
-
-			setMessageReceived(null);
-
-			dispatch(dialogActions.setUserDialog(dialogs));
-
-			localStorage.setItem('dialogs', JSON.stringify({ ...dialogs }));
 		}
+
+		handleMessage();
 	}, [messageReceived]);
 
 	useEffect(() => {
 		if (сontactAdded) {
-			dispatch(chatActions.setContacts([...contacts, { ...сontactAdded, id: сontactAdded.userId }]));
+			const newUnAddedContacts = unAddedContacts.filter((contact) => contact.id !== сontactAdded.userId);
+
+			dispatch(chatActions.setContacts([...contacts, { id: сontactAdded.userId, ...сontactAdded }]));
+			dispatch(chatActions.setUnAddedContacts(newUnAddedContacts));
+		}
+
+		if (сontactDeleted) {
+			dispatch(chatActions.setContacts([...contacts.filter((contact) => contact.id !== сontactDeleted.userId)]));
 		}
 	}, [сontactAdded, сontactDeleted]);
 

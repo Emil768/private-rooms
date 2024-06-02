@@ -12,4 +12,6 @@ export const getIsInitializedContactsSelector = () => Boolean(localStorage.getIt
 
 export const getIsInitFetchContactsSelector = (state: StoreSchema) => state?.chat.isInitFetchContacts;
 
-export const getContactsUsersDataSelector = (state: StoreSchema) => state?.chat.contacts;
+export const getUserContactsSelector = (state: StoreSchema) => state?.chat.contacts;
+
+export const getUnAddedUserContactsSelector = (state: StoreSchema) => state?.chat.unAddedContacts;

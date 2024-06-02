@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ChatState } from '../../types/chat';
 import { fetchUserSearchData } from '../../actions/chat/fetchUserSearchData';
 import { fetchUserGetContacts } from '../../actions/chat/fetchUserGetContacts';
-import { Dialog } from '../../types/dialog';
+import { Dialogs } from '../../types/dialog';
 
 const initialState: ChatState = {
 	search: '',
@@ -10,6 +10,7 @@ const initialState: ChatState = {
 	error: undefined,
 	users: [],
 	contacts: [],
+	unAddedContacts: [],
 	isInitFetchContacts: false,
 };
 export const chatSlice = createSlice({
@@ -19,8 +20,11 @@ export const chatSlice = createSlice({
 		setSearchValue: (state, action: PayloadAction<string>) => {
 			state.search = action.payload;
 		},
-		setContacts: (state, action: PayloadAction<Dialog[]>) => {
+		setContacts: (state, action: PayloadAction<Dialogs[]>) => {
 			state.contacts = action.payload;
+		},
+		setUnAddedContacts: (state, action: PayloadAction<Dialogs[]>) => {
+			state.unAddedContacts = action.payload;
 		},
 		setIsInitFetchContacts: (state, action: PayloadAction<boolean>) => {
 			state.isInitFetchContacts = action.payload;

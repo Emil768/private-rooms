@@ -29,3 +29,7 @@ export interface Dialog {
 	username: string;
 	onlineStatus: number;
 }
+
+export interface Dialogs extends Dialog {
+	unAdded?: boolean;
+}

@@ -2,12 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ExtraThunkProps } from '../../types/store';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
-import { getContactsUsersDataSelector } from '../../selectors/chat';
-import { chatActions } from '../../slices/chat';
 
 export const fetchRemoveUserContact = createAsyncThunk<null, string, ExtraThunkProps<string>>(
 	'dialog/fetchRemoveUserContact',
-	async (userId, { extra, dispatch, getState, rejectWithValue }) => {
+	async (userId, { extra, rejectWithValue }) => {
 		try {
 			const response = await extra.api.delete('/Contacts/Delete', {
 				data: { userIds: [userId] },
@@ -18,12 +16,6 @@ export const fetchRemoveUserContact = createAsyncThunk<null, string, ExtraThunkP
 					autoClose: 1500,
 					closeOnClick: true,
 				});
-
-				const contacts = getContactsUsersDataSelector(getState());
-
-				const updateContacts = contacts.filter((contact) => contact.id !== userId);
-
-				dispatch(chatActions.setContacts(updateContacts));
 			}
 			return null;
 		} catch (error) {
